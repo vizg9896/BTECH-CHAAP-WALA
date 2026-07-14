@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apply global subpixel anti-aliasing & crisp vector text rendering */
+* {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+  font-smooth: always;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-black text-brand-text antialiased selection:bg-brand-orange selection:text-white font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030712;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #18181b;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff6b00;
+}
+
+/* Premium Glassmorphism classes from frbfitness.in */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, border-color, box-shadow;
+}
+
+.glass-hover:hover {
+  background: rgba(24, 24, 27, 0.95);
+  border-color: rgba(255, 107, 0, 0.4) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 0 30px rgba(255, 107, 0, 0.15) !important;
+  transform: translateY(-4px) scale(1.025);
+}
+
+.glass-orange {
+  background: rgba(255, 107, 0, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 107, 0, 0.15);
+}
+
+.glass-orange-badge {
+  background: rgba(255, 183, 77, 0.12);
+  border: 1px solid rgba(255, 183, 77, 0.2);
+}
+
+/* Custom glow shadows */
+.shadow-glow {
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 107, 0, 0.05);
+}
+
+/* Animations */
+@keyframes modal-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-modal-in {
+  animation: modal-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Typography micro-spacing fixes for crisp display */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+.tracking-wide-brand {
+  letter-spacing: 0.28em;
+}
+
+.tracking-sub-brand {
+  letter-spacing: 0.35em;
+}
+
+/* Crisp High-Definition Pricing Typography */
+.crisp-price {
+  font-family: var(--font-sans), system-ui, sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em;
+  text-shadow: 0 0 1px rgba(255, 107, 0, 0.05);
+}
