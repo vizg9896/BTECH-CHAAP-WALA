@@ -45,6 +45,20 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "BTECH CHAAP WALA - Online Ordering & Admin | Jhajjar",
   description: "Order delicious charcoal-grilled soya chaaps online from BTECH CHAAP WALA at Bhagat Singh Chowk, Jhajjar, or manage orders in real time.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "BTECH CHAAP WALA",
+  },
+};
+
+export const viewport = {
+  themeColor: "#ea580c",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: "no",
 };
 
 export default function RootLayout({
