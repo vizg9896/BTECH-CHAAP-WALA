@@ -50,7 +50,8 @@ export default function AdminDashboard() {
     crmConfig,
     addExpense,
     deleteExpense,
-    updateCrmConfig
+    updateCrmConfig,
+    deleteOrder
   } = useOrders();
 
   // Admin authentication states
@@ -87,6 +88,7 @@ export default function AdminDashboard() {
   const [crmPublicUrlInput, setCrmPublicUrlInput] = useState("");
   const [isCrmSaving, setIsCrmSaving] = useState(false);
   const [invoiceOrder, setInvoiceOrder] = useState<Order | null>(null);
+  const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
   const [crmSearchQuery, setCrmSearchQuery] = useState("");
 
   // POS (Manual Billing) States
@@ -1186,6 +1188,14 @@ export default function AdminDashboard() {
                               >
                                 <MessageSquare size={12} />
                               </button>
+                              <button
+                                type="button"
+                                onClick={() => setOrderToDelete(order)}
+                                className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500 hover:text-white text-red-500 transition-all border border-red-500/20 cursor-pointer"
+                                title="Delete Order"
+                              >
+                                <Trash2 size={12} />
+                              </button>
                             </div>
                           </div>
                         </td>
@@ -1930,6 +1940,55 @@ export default function AdminDashboard() {
               <p className="text-[9px] text-zinc-400 text-center font-sans mt-1.5 leading-relaxed bg-zinc-50 p-2 rounded-lg border border-zinc-100">
                 ℹ️ <strong>Sending PDF on WhatsApp:</strong> Click <strong>Print Receipt</strong> &rarr; change Destination printer to <strong>Save as PDF</strong>. Once saved, drag &amp; drop the PDF file into your WhatsApp chat.
               </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Delete Confirmation Modal Overlay */}
+      {orderToDelete && (
+        <div className="fixed inset-0 z-[250] flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 animate-fade-in print-hidden">
+          <div className="bg-brand-surface border border-white/10 rounded-[2rem] p-6 max-w-sm w-full shadow-glow space-y-6 relative text-center">
+            <button
+              type="button"
+              onClick={() => setOrderToDelete(null)}
+              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-white/10 text-brand-text-muted hover:text-white transition-colors cursor-pointer"
+              title="Cancel"
+            >
+              <X size={16} />
+            </button>
+
+            <div className="w-14 h-14 rounded-full bg-red-500/10 border border-red-500/25 mx-auto flex items-center justify-center text-red-500 shadow-red-glow animate-pulse">
+              <Trash2 size={24} />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm sm:text-md font-bold uppercase text-white tracking-wide font-heading">
+                Delete Order
+              </h3>
+              <p className="text-xs text-brand-text-muted leading-relaxed">
+                Are you sure you want to permanently delete order <span className="text-brand-orange font-bold font-mono">{orderToDelete.id}</span>? This action cannot be undone.
+              </p>
+            </div>
+
+            <div className="flex gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setOrderToDelete(null)}
+                className="flex-1 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  await deleteOrder(orderToDelete.id);
+                  setOrderToDelete(null);
+                }}
+                className="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white font-extrabold rounded-xl text-xs transition-all shadow-red-glow cursor-pointer"
+              >
+                Yes, Delete
+              </button>
             </div>
           </div>
         </div>

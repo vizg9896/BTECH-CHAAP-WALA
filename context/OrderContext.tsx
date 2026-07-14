@@ -60,6 +60,7 @@ interface OrderContextProps {
   addExpense: (amount: number, category: string, description: string, date: string) => Promise<void>;
   deleteExpense: (id: string) => Promise<void>;
   updateCrmConfig: (config: CrmConfig) => Promise<void>;
+  deleteOrder: (id: string) => Promise<void>;
 }
 
 const OrderContext = createContext<OrderContextProps | undefined>(undefined);
@@ -531,6 +532,23 @@ export const OrderContextProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   }, [isSupabaseConnected]);
 
+  const deleteOrder = useCallback(async (id: string) => {
+    if (isSupabaseConnected) {
+      const { error } = await supabase!
+        .from("orders")
+        .delete()
+        .eq("id", id);
+      if (error) {
+        console.error("Supabase delete order error:", error);
+      }
+      // Optimistic update
+      setOrders((prev) => prev.filter((o) => o.id !== id));
+    } else {
+      const updated = orders.filter((o) => o.id !== id);
+      saveLocalOrders(updated);
+    }
+  }, [isSupabaseConnected, orders]);
+
   return (
     <OrderContext.Provider value={{
       orders,
@@ -551,6 +569,7 @@ export const OrderContextProvider: React.FC<{ children: React.ReactNode }> = ({ 
       addExpense,
       deleteExpense,
       updateCrmConfig,
+      deleteOrder,
     }}>
       {children}
     </OrderContext.Provider>
