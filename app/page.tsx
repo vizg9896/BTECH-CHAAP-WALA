@@ -23,7 +23,8 @@ import {
   Clock,
   AlertTriangle,
   CheckCircle2,
-  Navigation
+  Navigation,
+  Search
 } from "lucide-react";
 
 // Catalog and Carousel Interfaces
@@ -963,6 +964,7 @@ export default function Home() {
   const [trackSearchQuery, setTrackSearchQuery] = useState("");
   const [trackSearchResults, setTrackSearchResults] = useState<Order[]>([]);
   const [trackSearchError, setTrackSearchError] = useState("");
+  const [menuSearchQuery, setMenuSearchQuery] = useState("");
 
   useEffect(() => {
     setIsMounted(true);
@@ -1099,9 +1101,16 @@ export default function Home() {
   const deliveryFee = orderType === "Delivery" ? DELIVERY_CHARGE : 0;
   const total = subtotal + deliveryFee;
 
-  const filteredItems = category === "all" 
-    ? activeMenuItems 
-    : activeMenuItems.filter(item => item.category === category);
+  const filteredItems = activeMenuItems.filter(item => {
+    // Filter by category
+    if (category !== "all" && item.category !== category) return false;
+    // Filter by search query
+    if (menuSearchQuery.trim() !== "") {
+      const search = menuSearchQuery.toLowerCase().trim();
+      return item.name.toLowerCase().includes(search) || item.description.toLowerCase().includes(search);
+    }
+    return true;
+  });
 
   // Dual dispatch handler
   const handleOrderSubmit = async () => {
@@ -1692,12 +1701,15 @@ export default function Home() {
                 className="flex items-center gap-1 hover:text-brand-orange transition-colors"
               >
                 <MapPin size={10} className="text-brand-orange animate-pulse" />
-                Bhagat Singh Chowk, Jhajjar
+                <span className="hidden sm:inline">Bhagat Singh Chowk, </span>Jhajjar
               </a>
-              <span className="flex items-center gap-1">
+              <a 
+                href="tel:+919053160031" 
+                className="flex items-center gap-1 hover:text-brand-orange transition-colors cursor-pointer"
+              >
                 <Phone size={10} className="text-brand-orange" />
                 +91 90531 60031
-              </span>
+              </a>
             </div>
           </div>
 
@@ -1747,7 +1759,7 @@ export default function Home() {
       </nav>
 
       {/* Main content wrapper */}
-      <div className="pt-24 sm:pt-28 flex flex-col w-full">
+      <div className="pt-28 sm:pt-28 flex flex-col w-full">
         
         {isMounted && isStoreClosed && !isBannerDismissed && (
           <div className="w-full px-4 md:px-8 lg:px-12 mx-auto mb-2 mt-4">
@@ -1776,7 +1788,7 @@ export default function Home() {
 
         {/* Hero Carousel Section */}
         {carouselItems.length > 0 && (
-              <section className="w-full px-4 md:px-8 lg:px-12 mx-auto mt-6">
+              <section className="w-full px-4 md:px-8 lg:px-12 mx-auto mt-10 md:mt-6">
                 <div className="relative overflow-hidden bg-gradient-to-br from-brand-orange/10 to-brand-black border border-brand-orange/15 rounded-[2rem] p-4 sm:p-8 md:px-12 md:py-8 shadow-glow min-h-[180px] sm:min-h-[260px] md:min-h-[384px] flex flex-col justify-center">
                   <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-transparent z-0"></div>
                   
@@ -1983,8 +1995,31 @@ export default function Home() {
                     </div>
                   )}
 
+                  {/* Menu Search Bar */}
+                  <div className="relative w-full max-w-md mb-6">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Search className="h-4 w-4 text-brand-text-muted" />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search delicious dishes (e.g. chaap, momos, roll)..."
+                      value={menuSearchQuery}
+                      onChange={(e) => setMenuSearchQuery(e.target.value)}
+                      className="w-full bg-brand-surface border border-white/10 rounded-full pl-10 pr-10 py-3 text-xs sm:text-sm text-white placeholder-brand-text-muted focus:border-brand-orange focus:outline-none transition-all shadow-glow"
+                    />
+                    {menuSearchQuery && (
+                      <button
+                        onClick={() => setMenuSearchQuery("")}
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-brand-text-muted hover:text-white transition-colors cursor-pointer"
+                        title="Clear Search"
+                      >
+                        <X size={14} />
+                      </button>
+                    )}
+                  </div>
+
                   {/* Selected Category Header */}
-                  <div className="mb-6 border-b border-white/5 pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4 bg-white/[0.01] p-5 rounded-2xl border border-white/5">
+                  <div className="mb-6 border-b border-white/5 pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4 bg-white/[0.01] p-5 rounded-2xl border border-white/5 font-sans">
                     <div className="space-y-1">
                       <h2 className="text-xl font-bold font-heading text-white flex items-center gap-2 capitalize">
                         {category === "all" ? "🔥 Our Full Menu" : 
